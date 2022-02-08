@@ -9,53 +9,57 @@ using Debug = UnityEngine.Debug;
 public class Main : EditorWindow
 {
     [MenuItem("Git/Main")]
-    public static void OpenWindow()
+    public static void MainWindow()
     {
         GetWindow<Main>();
     }
     
-    
     private void OnEnable()
     {
-#if UNITY_EDITOR_OSX
-        ExecuteProcessTerminal("ioreg -l | awk '/IOPlatformSerialNumber/ { print $4;}'", "/bin/bash");
-#endif
-#if UNITY_EDITOR_WIN
-        ExecuteProcessTerminal("git add .", "/cmd");
-        ExecuteProcessTerminal("git commit -m \"second commit\"", "/cmd");
-        ExecuteProcessTerminal("git push", "/cmd");
-#endif
-    }
-    private void ExecuteProcessTerminal(string argument, string term)
-    {
-        try
-        {
-            UnityEngine.Debug.Log("============== Start Executing [" + argument + "] ===============");
-            ProcessStartInfo startInfo = new ProcessStartInfo(term)
-            {
-                WorkingDirectory = Environment.CurrentDirectory,
-                UseShellExecute = false,
-                RedirectStandardOutput = true
-            };
-            Process myProcess = new Process
-            {
-                StartInfo = startInfo
-            };
-            myProcess.StartInfo.Arguments = argument;
-            myProcess.Start();
-            string output = myProcess.StandardOutput.ReadToEnd();
-            UnityEngine.Debug.Log("Result for [" + argument + "] is : \n" + output);
-            myProcess.WaitForExit();
-            UnityEngine.Debug.Log("============== End ===============");
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e);
-        }
+        ExecuteProcessTerminal("add .", "git");
+        ExecuteProcessTerminal("commit -m \"second commit\"", "git");
+        ExecuteProcessTerminal("push", "git");
     }
 
     private void OnGUI()
     {
         
+    }
+    
+    private string ExecuteProcessTerminal(string argument, string term)
+    {
+        try
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = term,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                CreateNoWindow = false,
+                WorkingDirectory = Environment.CurrentDirectory
+            };
+
+            Process myProcess = new Process
+            {
+                StartInfo = startInfo
+            };
+            
+            UnityEngine.Debug.Log("============== Start Executing [" + argument + "] ==============="); 
+            startInfo.Arguments =  argument; 
+            myProcess.StartInfo = startInfo; 
+            myProcess.Start(); 
+            string output = myProcess.StandardOutput.ReadToEnd(); 
+            Debug.Log(output); 
+            myProcess.WaitForExit(); 
+            Debug.Log("============== End ===============");
+            return output;
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.Log(e);
+            return null;
+        }
     }
 }
