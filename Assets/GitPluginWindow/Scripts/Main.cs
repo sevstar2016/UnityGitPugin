@@ -40,7 +40,8 @@ public class Main : EditorWindow
         {
             foreach (var gitElement in checks)
             {
-                Debug.Log(ExecuteProcessTerminal("add " + gitElement.path, "git"));
+                Debug.Log(gitElement.path.Substring(2));
+                Debug.Log(ExecuteProcessTerminal("add " + gitElement.path.Substring(2), "git"));
             }
             UpdateUI();
         }
