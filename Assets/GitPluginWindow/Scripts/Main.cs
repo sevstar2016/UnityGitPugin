@@ -41,7 +41,10 @@ public class Main : EditorWindow
         {
             foreach (var gitElement in checks)
             {
-                ExecuteProcessTerminal("add " + gitElement.path.Substring(2), "git");
+                if (gitElement.Enable)
+                {
+                    ExecuteProcessTerminal("add " + gitElement.path.Substring(2), "git");
+                }
             }
             ExecuteProcessTerminal("commit -m \"" + text + "\"", "git");
             ExecuteProcessTerminal("push", "git");
