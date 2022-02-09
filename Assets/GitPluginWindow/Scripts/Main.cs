@@ -35,23 +35,14 @@ public class Main : EditorWindow
         GUILayout.EndScrollView();
 
         text = GUILayout.TextArea(text, GUILayout.Height(100));
-        
-        if (GUILayout.Button("Add"))
-        {
-            foreach (var gitElement in checks)
-            {
-               ExecuteProcessTerminal("add " + gitElement.path.Substring(2), "git");
-            }
-            UpdateUI();
-        }
-
-        if (GUILayout.Button("Commit"))
-        {
-            ExecuteProcessTerminal("commit -m \"" + text + "\"", "git");
-        }
 
         if (GUILayout.Button("Push"))
         {
+            foreach (var gitElement in checks)
+            {
+                ExecuteProcessTerminal("add " + gitElement.path.Substring(2), "git");
+            }
+            ExecuteProcessTerminal("commit -m \"" + text + "\"", "git");
             ExecuteProcessTerminal("push", "git");
             UpdateUI();
         }
@@ -103,7 +94,7 @@ public class Main : EditorWindow
         {
             try
             {
-                if (s.Length > 0)
+                if (s.Length > 1)
                 {
                     checks.Add(new GitElement(true, s));
                 }
