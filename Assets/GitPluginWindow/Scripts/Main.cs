@@ -40,19 +40,19 @@ public class Main : EditorWindow
         {
             foreach (var gitElement in checks)
             {
-                Debug.Log(ExecuteProcessTerminal("add " + gitElement.path.Substring(2), "git"));
+               ExecuteProcessTerminal("add " + gitElement.path.Substring(2), "git");
             }
             UpdateUI();
         }
 
         if (GUILayout.Button("Commit"))
         {
-            Debug.Log(ExecuteProcessTerminal("commit -m \"" + text + "\"", "git"));
+            ExecuteProcessTerminal("commit -m \"" + text + "\"", "git");
         }
 
         if (GUILayout.Button("Push"))
         {
-            Debug.Log(ExecuteProcessTerminal("push", "git"));
+            ExecuteProcessTerminal("push", "git");
             UpdateUI();
         }
 
@@ -98,7 +98,7 @@ public class Main : EditorWindow
     private void UpdateUI()
     {
         checks = new List<GitElement>();
-        var str = ExecuteProcessTerminal("diff --name-status --diff-filter=ARM", "git").Split('\n');
+        var str = ExecuteProcessTerminal("diff --name-status", "git").Split('\n');
         foreach (var s in str)
         {
             try
