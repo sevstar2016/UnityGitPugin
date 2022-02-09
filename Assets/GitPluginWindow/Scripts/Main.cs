@@ -3,11 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEditor;
+using UnityEditor.UI;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 public class Main : EditorWindow
 {
+    public Vector2 scrollPos = Vector2.zero;
+    public List<bool> checks = new List<bool>() {true};
+    
     [MenuItem("Git/Main")]
     public static void MainWindow()
     {
@@ -16,14 +20,22 @@ public class Main : EditorWindow
     
     private void OnEnable()
     {
-        ExecuteProcessTerminal("add .", "git");
-        ExecuteProcessTerminal("commit -m \"second commit\"", "git");
-        ExecuteProcessTerminal("push", "git");
+        
     }
 
     private void OnGUI()
     {
+        scrollPos = GUI.BeginScrollView(new Rect(new Vector2(5,30), new Vector2(250, 500)), scrollPos,
+            new Rect(new Vector2(0, 0), new Vector2(240, maxSize.y)), false, false);
+
+        checks[0] = GUI.Toggle(new Rect(new Vector2(5,5), new Vector2(maxSize.x,10)), checks[0], "123");
         
+        GUI.EndScrollView();
+        
+        if (GUILayout.Button("Add"))
+        {
+            ExecuteProcessTerminal("add .", "git");
+        }
     }
     
     private string ExecuteProcessTerminal(string argument, string term)
@@ -37,7 +49,7 @@ public class Main : EditorWindow
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
-                CreateNoWindow = false,
+                CreateNoWindow = true,
                 WorkingDirectory = Environment.CurrentDirectory
             };
 
@@ -45,15 +57,12 @@ public class Main : EditorWindow
             {
                 StartInfo = startInfo
             };
-            
-            UnityEngine.Debug.Log("============== Start Executing [" + argument + "] ==============="); 
             startInfo.Arguments =  argument; 
             myProcess.StartInfo = startInfo; 
             myProcess.Start(); 
             string output = myProcess.StandardOutput.ReadToEnd(); 
             Debug.Log(output); 
-            myProcess.WaitForExit(); 
-            Debug.Log("============== End ===============");
+            myProcess.WaitForExit();
             return output;
         }
         catch (Exception e)
