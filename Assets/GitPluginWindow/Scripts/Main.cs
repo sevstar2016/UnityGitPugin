@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
@@ -89,9 +90,19 @@ public class Main : EditorWindow
     private void UpdateUI()
     {
         checks = new List<GitElement>();
-        var str = ExecuteProcessTerminal("diff --name-status", "git").Split('\n');
+        var str = ExecuteProcessTerminal("diff --name-status", "git").Split('\n').ToList();
+        str.Remove(str[str.Count - 1]);
+        var st = ExecuteProcessTerminal("ls-files --others --exclude-standard", "git").Split('\n').ToList();
+        str.Remove(st[st.Count - 1]);
+        for (int i = 0; i < st.Count; i++)
+        {
+            st[i] = "A	" + st[i];
+        }
+        str.AddRange(st);
+        str.Remove(st[st.Count - 1]);
         foreach (var s in str)
         {
+            Debug.Log(s);
             try
             {
                 checks.Add(new GitElement(true, s));
@@ -101,8 +112,6 @@ public class Main : EditorWindow
                 
             }
         }
-
-        checks.Remove(checks[checks.Count - 1]);
     }
 }
 
