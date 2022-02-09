@@ -94,16 +94,15 @@ public class Main : EditorWindow
         {
             try
             {
-                if (s.Length > 1)
-                {
-                    checks.Add(new GitElement(true, s));
-                }
+                checks.Add(new GitElement(true, s));
             }
             catch
             {
                 
             }
         }
+
+        checks.Remove(checks[checks.Count - 1]);
     }
 }
 
