@@ -18,7 +18,12 @@ public class Main : EditorWindow
     {
         GetWindow<Main>();
     }
-    
+
+    private void OnFocus()
+    {
+        UpdateUI();
+    }
+
     private void OnEnable()
     {
         UpdateUI();
@@ -57,7 +62,7 @@ public class Main : EditorWindow
         }
     }
     
-    private string ExecuteProcessTerminal(string argument, string term)
+    public static string ExecuteProcessTerminal(string argument, string term)
     {
         try
         {
@@ -105,7 +110,6 @@ public class Main : EditorWindow
         str.Remove(st[st.Count - 1]);
         foreach (var s in str)
         {
-            Debug.Log(s);
             try
             {
                 checks.Add(new GitElement(true, s));
