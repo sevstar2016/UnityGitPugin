@@ -12,7 +12,7 @@ public class Main : EditorWindow
 {
     public Vector2 scrollPos = Vector2.zero;
     public List<GitElement> checks = new List<GitElement>();
-    private string text = "Commit text";
+    private string text = "Commit";
     [MenuItem("Git/Main")]
     public static void MainWindow()
     {
