@@ -103,7 +103,7 @@ public class Main : EditorWindow
         {
             try
             {
-                if (s[0] == 'M' || s[0] == 'A' || s[0] == 'R')
+                if (s.Length > 0)
                 {
                     checks.Add(new GitElement(true, s));
                 }
