@@ -10,8 +10,8 @@ using Debug = UnityEngine.Debug;
 public class Main : EditorWindow
 {
     public Vector2 scrollPos = Vector2.zero;
-    public List<bool> checks = new List<bool>() {true};
-    
+    public List<GitElement> checks = new List<GitElement>();
+    private string text = "Commit text";
     [MenuItem("Git/Main")]
     public static void MainWindow()
     {
@@ -20,21 +20,45 @@ public class Main : EditorWindow
     
     private void OnEnable()
     {
-        
+        UpdateUI();
     }
 
     private void OnGUI()
     {
-        scrollPos = GUI.BeginScrollView(new Rect(new Vector2(5,30), new Vector2(250, 500)), scrollPos,
-            new Rect(new Vector2(0, 0), new Vector2(240, maxSize.y)), false, false);
+        GUILayout.BeginScrollView(new Vector2(0, 0), GUILayout.MaxHeight(200));
 
-        checks[0] = GUI.Toggle(new Rect(new Vector2(5,5), new Vector2(maxSize.x,10)), checks[0], "123");
+        foreach (var check in checks)
+        {
+            check.Enable = GUILayout.Toggle(check.Enable, check.path);
+        }
         
-        GUI.EndScrollView();
+        GUILayout.EndScrollView();
+
+        text = GUILayout.TextArea(text, GUILayout.Height(100));
         
         if (GUILayout.Button("Add"))
         {
-            ExecuteProcessTerminal("add .", "git");
+            foreach (var gitElement in checks)
+            {
+                Debug.Log(ExecuteProcessTerminal("add " + gitElement.path, "git"));
+            }
+            UpdateUI();
+        }
+
+        if (GUILayout.Button("Commit"))
+        {
+            Debug.Log(ExecuteProcessTerminal("commit -m \"" + text + "\"", "git"));
+        }
+
+        if (GUILayout.Button("Push"))
+        {
+            Debug.Log(ExecuteProcessTerminal("push", "git"));
+            UpdateUI();
+        }
+
+        if (GUILayout.Button("Pull"))
+        {
+            ExecuteProcessTerminal("pull", "git");
         }
     }
     
@@ -61,7 +85,6 @@ public class Main : EditorWindow
             myProcess.StartInfo = startInfo; 
             myProcess.Start(); 
             string output = myProcess.StandardOutput.ReadToEnd(); 
-            Debug.Log(output); 
             myProcess.WaitForExit();
             return output;
         }
@@ -70,5 +93,36 @@ public class Main : EditorWindow
             UnityEngine.Debug.Log(e);
             return null;
         }
+    }
+
+    private void UpdateUI()
+    {
+        checks = new List<GitElement>();
+        var str = ExecuteProcessTerminal("diff --name-status --diff-filter=ARM", "git").Split('\n');
+        foreach (var s in str)
+        {
+            try
+            {
+                if (s[0] == 'M' || s[0] == 'A' || s[0] == 'R')
+                {
+                    checks.Add(new GitElement(true, s));
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+    }
+}
+
+public class GitElement
+{
+    public bool Enable;
+    public string path;
+    public GitElement(bool en, string pat)
+    {
+        Enable = en;
+        path = pat;
     }
 }
