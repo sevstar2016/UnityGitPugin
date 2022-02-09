@@ -7,7 +7,7 @@ public class qwqe : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("Соси пипиську");
     }
 
     // Update is called once per frame

@@ -58,7 +58,7 @@ public class Main : EditorWindow
 
         if (GUILayout.Button("Pull"))
         {
-            ExecuteProcessTerminal("pull", "git");
+            Debug.Log(ExecuteProcessTerminal("pull", "git"));
         }
     }
     
