@@ -54,6 +54,7 @@
   <ItemGroup>
      <Compile Include="Assets\GitPluginWindow\Scripts\Main.cs" />
      <Compile Include="Assets\GitPluginWindow\Scripts\Login.cs" />
+     <Compile Include="Assets\GitPluginWindow\Scripts\qwqe.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.26f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>
